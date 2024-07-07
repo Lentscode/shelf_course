@@ -17,7 +17,8 @@ final _publicRouter = Router()
 final _protectedRouter = Router()
   ..get("/todos", getTodos)
   ..post("/todos", createTodo)
-  ..patch("/todos", completeTodo);
+  ..patch("/todos", completeTodo)
+  ..delete("/todos", deleteTodo);
 
 final _publicHandler = const Pipeline().addMiddleware(handleErrors()).addHandler(_publicRouter.call);
 final _protectedHandler = const Pipeline()

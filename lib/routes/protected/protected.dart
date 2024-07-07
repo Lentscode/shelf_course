@@ -11,3 +11,4 @@ import "../../models/todo.dart";
 part "get_todos.dart";
 part "create_todo.dart";
 part "complete_todo.dart";
+part "delete_todo.dart";

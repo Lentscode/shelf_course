@@ -4,9 +4,9 @@ import "package:shelf/shelf.dart";
 import "package:shelf/shelf_io.dart";
 import "package:shelf_router/shelf_router.dart";
 
-// Il router ci permette di definire delle routes per la nostra API, 
+// Il router ci permette di definire delle routes per la nostra API,
 // con il la keyword corrispondente. In questo caso abbiamo due routes,
-// entrambe sono dei GET. 
+// entrambe sono dei GET.
 //
 // Ogni route accetta il percorso da inserire nell'url per accederle e la
 // funzione handler che si occupa di dare una risposta.
@@ -34,7 +34,7 @@ void main(List<String> args) async {
   final ip = InternetAddress.anyIPv4;
 
   // Una [Pipeline] permette di aggiungere un [Middleware] a un handler - in questo caso
-  // abbiamo direttamente il router. In questo modo, ad ogni richiesta, viene eseguito prima il middleware, 
+  // abbiamo direttamente il router. In questo modo, ad ogni richiesta, viene eseguito prima il middleware,
   // che nel particolare stampa nel terminale la richiesta.
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router.call);
 

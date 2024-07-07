@@ -2,41 +2,28 @@ import "dart:io";
 
 import "package:shelf/shelf.dart";
 import "package:shelf/shelf_io.dart";
-import "package:shelf_course/config/app_config.dart";
-import "package:shelf_course/middlewares/check_authorization.dart";
-import "package:shelf_course/middlewares/handle_errors.dart";
-import "package:shelf_course/routes/protected/protected.dart";
-import "package:shelf_course/routes/public/public.dart";
 import "package:shelf_router/shelf_router.dart";
-import "package:dotenv/dotenv.dart" show DotEnv;
 
 // Configure routes.
-final _publicRouter = Router()
-  ..post("/register", register)
-  ..get("/login", login);
-final _protectedRouter = Router()
-  ..get("/todos", getTodos)
-  ..post("/todos", createTodo)
-  ..patch("/todos", completeTodo);
+final _router = Router()
+  ..get("/", _rootHandler)
+  ..get("/echo/<message>", _echoHandler);
 
-final _publicHandler = const Pipeline().addMiddleware(handleErrors()).addHandler(_publicRouter.call);
-final _protectedHandler = const Pipeline()
-    .addMiddleware(checkAuthorization())
-    .addMiddleware(handleErrors())
-    .addHandler(_protectedRouter.call);
+Response _rootHandler(Request req) {
+  return Response.ok("Hello, World!\n");
+}
 
-final mainRouter = Router()
-  ..mount("/api/", _publicHandler)
-  ..mount("/api/protected", _protectedHandler);
+Response _echoHandler(Request request) {
+  final message = request.params["message"];
+  return Response.ok("$message\n");
+}
 
 void main(List<String> args) async {
-  final env = DotEnv(includePlatformEnvironment: true)..load();
   // Use any available host or container IP (usually `0.0.0.0`).
-  AppConfig.init(env["SECRET_KEY"]);
   final ip = InternetAddress.anyIPv4;
-  // Configure a pipeline that logs requests.
 
-  final handler = Pipeline().addMiddleware(logRequests()).addHandler(mainRouter.call);
+  // Configure a pipeline that logs requests.
+  final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router.call);
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment["PORT"] ?? "8080");

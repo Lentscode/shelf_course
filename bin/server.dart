@@ -12,6 +12,7 @@ import "package:shelf_router/shelf_router.dart";
 
 // Configure routes.
 final _publicRouter = Router()
+  ..get("/", root)
   ..post("/register", register)
   ..get("/login", login);
 final _protectedRouter = Router()

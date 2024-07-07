@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:dotenv/dotenv.dart" show DotEnv;
 import "package:shelf/shelf.dart";
 import "package:shelf/shelf_io.dart";
 import "package:shelf_course/config/app_config.dart";
@@ -8,7 +9,6 @@ import "package:shelf_course/middlewares/handle_errors.dart";
 import "package:shelf_course/routes/protected/protected.dart";
 import "package:shelf_course/routes/public/public.dart";
 import "package:shelf_router/shelf_router.dart";
-import "package:dotenv/dotenv.dart" show DotEnv;
 
 // Configure routes.
 final _publicRouter = Router()

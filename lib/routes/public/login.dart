@@ -17,7 +17,10 @@ Future<Response> login(Request req) async {
     {"id": user.id, "username": user.username},
   );
 
-  final token = jwt.sign(SecretKey(AppConfig.secretKey));
+  final token = jwt.sign(
+    SecretKey(AppConfig.secretKey),
+    expiresIn: Duration(hours: 1),
+  );
 
   return Response.ok(
     jsonEncode({"token": token}),

@@ -4,10 +4,7 @@ Future<Response> deleteTodo(Request req) async {
   final jwt = req.context["jwt"] as JWT;
   final userId = jwt.payload["id"] as String;
 
-  final payload = await req.readAsString();
-  final data = jsonDecode(payload);
-
-  final todoTitle = data["todoTitle"] as String?;
+  final todoTitle = req.params["title"];
 
   if (todoTitle == null || todoTitle.isEmpty) {
     return Response.badRequest(body: "Title is missing or empty");

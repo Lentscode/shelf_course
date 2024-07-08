@@ -28,7 +28,7 @@ Future<Response> register(Request req) async {
   users.add(user);
 
   return Response.ok(
-    jsonEncode(user),
+    jsonEncode(user.toJson()),
     headers: {"Content-Type": "application/json"},
   );
 }

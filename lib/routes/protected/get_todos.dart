@@ -5,7 +5,7 @@ Future<Response> getTodos(Request req) async {
 
   final String userId = jwt.payload["id"];
 
-  final userTodos = todos.where((todo) => todo.id == userId).toList();
+  final userTodos = todos.where((todo) => todo.userId == userId).toList();
 
   return Response.ok(
     jsonEncode(userTodos.map((todo) => todo.toJson()).toList()),

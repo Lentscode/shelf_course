@@ -11,7 +11,7 @@ Future<Response> createTodo(Request req) async {
     return Response.badRequest(body: "Title missing or empty");
   }
 
-  final Todo todo = Todo.fromJson(data).copyWith(id: userId);
+  final Todo todo = Todo.fromJson(data).copyWith(userId: userId);
 
   todos.add(todo);
 

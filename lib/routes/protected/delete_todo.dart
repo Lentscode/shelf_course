@@ -10,7 +10,7 @@ Future<Response> deleteTodo(Request req) async {
     return Response.badRequest(body: "Title is missing or empty");
   }
 
-  final todo = todos.firstWhereOrNull((todo) => todo.title == todoTitle && todo.id == userId);
+  final todo = todos.firstWhereOrNull((todo) => todo.title == todoTitle && todo.userId == userId);
 
   if (todo == null) {
     return Response.forbidden("Todo not existing or user have no access");

@@ -12,7 +12,7 @@ Future<Response> completeTodo(Request req) async {
 
   final todo = todos.firstWhereOrNull((todo) => todo.title == todoTitle);
 
-  if (todo == null || todo.id != userId) {
+  if (todo == null || todo.userId != userId) {
     return Response.badRequest(body: "Unable to access to todo with title: $todoTitle");
   }
 

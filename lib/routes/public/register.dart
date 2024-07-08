@@ -35,7 +35,8 @@ Future<Response> register(Request req) async {
   // Aggiungiamo questo utente alla lista
   users.add(user);
 
-  // Ritorniamo come risposta i dati dell'utente
+  // Ritorniamo come risposta i dati dell'utente tramite il metodo 
+  // toJson()
   return Response.ok(
     jsonEncode(user.toJson()),
     headers: {"Content-Type": "application/json"},

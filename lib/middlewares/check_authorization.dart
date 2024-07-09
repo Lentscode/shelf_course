@@ -1,6 +1,4 @@
-import "package:dart_jsonwebtoken/dart_jsonwebtoken.dart";
-import "package:shelf/shelf.dart";
-import "../config/app_config.dart";
+part of "middlewares.dart";
 
 // Questo middleware viene chiamato ad ogni richiesta fatta nelle routes protette.
 // Controlla che il JWT dato dall'utente sia valido per farlo accedere alla gestione
@@ -19,13 +17,13 @@ Middleware checkAuthorization() {
       final token = authHeader.substring(7);
 
       // Proviamo a verificare il JWT, riutilizzando la nostra chiave segreta.
-      // Se il token è valido, lo aggiungiamo al contesto della richiesta, e 
+      // Se il token è valido, lo aggiungiamo al contesto della richiesta, e
       // aggiorniamo l'[innerHandler] con il nuovo contesto.
       //
-      // Se il token non è valido, viene lanciata un'eccezione, che 
+      // Se il token non è valido, viene lanciata un'eccezione, che
       // intercettiamo, rifiutando la richiesta.
       try {
-        final jwt = JWT.verify(token, SecretKey(AppConfig.secretKey));
+        final jwt = JWTManager.verifyToken(token);
         final updateRequest = req.change(context: {"jwt": jwt});
         return await innerHandler(updateRequest);
       } catch (e) {

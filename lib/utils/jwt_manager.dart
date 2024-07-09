@@ -19,4 +19,6 @@ class JWTManager {
 
     return token;
   }
+
+  static JWT verifyToken(String token) => JWT.verify(token, SecretKey(AppConfig.secretKey));
 }

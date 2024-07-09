@@ -3,8 +3,7 @@ part of "protected.dart";
 // Handler per cancellare un todo.
 Future<Response> deleteTodo(Request req) async {
   // Accediamo all'id dell'utente tramite il JWT
-  final jwt = req.context["jwt"] as JWT;
-  final userId = jwt.payload["id"] as String;
+  final String userId = (await RequestUtils.getDataFromJWT(req))["id"];
 
   // Accediamo al titolo del todo tramite il parametro della richiesta.s
   final todoTitle = req.params["title"];
@@ -15,7 +14,7 @@ Future<Response> deleteTodo(Request req) async {
   }
 
   // Cerchiamo il todo col titolo dato e controlliamo anche se è dell'utente.
-  final todo = todos.firstWhereOrNull((todo) => todo.title == todoTitle && todo.userId == userId);
+  final todo = TodoManager.getTodoByTitle(todoTitle, userId);
 
   // Se non esiste, rifiutiamo la richiesta.
   if (todo == null) {
@@ -23,7 +22,7 @@ Future<Response> deleteTodo(Request req) async {
   }
 
   // Rimuoviamo il todo dalla lista.
-  todos.remove(todo);
+  TodoManager.deleteTodo(todo);
 
   // Ritorniamo un messaggio di conferma.
   return Response.ok(

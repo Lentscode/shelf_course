@@ -2,8 +2,7 @@ part of "public.dart";
 
 // Handler utilizzato per registrare l'utente.
 Future<Response> register(Request req) async {
-  final payload = await req.readAsString();
-  final data = jsonDecode(payload);
+  final data = await RequestUtils.getPayload(req);
 
   // Dal payload della richiesta otteniamo username e password.
   final String username = data["username"];
@@ -16,26 +15,14 @@ Future<Response> register(Request req) async {
 
   // Controlliamo se l'username è stato già preso.
   // Se sì, rifiutiamo la richiesta.
-  final userExisting = users.any((user) => user.username == username);
+  final userExisting = UserManager.checkIfUserExists(username);
   if (userExisting) {
     return Response.forbidden("Error creating user. Retry");
   }
 
-  // Codifichiamo la password usando SHA-256.
-  final hashedPassword = User.hashPassword(password);
+  final User user = UserManager.createUser(username, password);
 
-  // Creiamo un oggetto [User] con id uguale alla data attuale trasformata
-  // in millisecondi e username e password codificata.
-  final User user = User(
-    id: DateTime.now().millisecondsSinceEpoch.toString(),
-    username: username,
-    passwordHash: hashedPassword,
-  );
-
-  // Aggiungiamo questo utente alla lista
-  users.add(user);
-
-  // Ritorniamo come risposta i dati dell'utente tramite il metodo 
+  // Ritorniamo come risposta i dati dell'utente tramite il metodo
   // toJson()
   return Response.ok(
     jsonEncode(user.toJson()),

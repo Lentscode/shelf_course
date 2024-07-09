@@ -3,8 +3,7 @@ part of "protected.dart";
 // Handler per settare il campo "completed" di un todo a `true`.
 Future<Response> completeTodo(Request req) async {
   // Accediamo all'id nel JWT.
-  final jwt = req.context["jwt"] as JWT;
-  final userId = jwt.payload["id"] as String;
+  final String userId = (await RequestUtils.getDataFromJWT(req))["id"];
 
   // Accediamo al titolo del todo provveduto dall'utente tramite
   // il parametro nella richiesta.
@@ -16,11 +15,11 @@ Future<Response> completeTodo(Request req) async {
   }
 
   // Cerchiamo il todo.
-  final todo = todos.firstWhereOrNull((todo) => todo.title == todoTitle);
+  final todo = TodoManager.getTodoByTitle(todoTitle, userId);
 
   // Se il todo non esiste o l'utente non vi ha accesso, rifiutiamo
   // la richiesta.
-  if (todo == null || todo.userId != userId) {
+  if (todo == null) {
     return Response.badRequest(body: "Unable to access to todo with title: $todoTitle");
   }
 

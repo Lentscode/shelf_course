@@ -4,6 +4,8 @@ import "package:dotenv/dotenv.dart" show DotEnv;
 import "package:shelf/shelf.dart";
 import "package:shelf/shelf_io.dart";
 import "package:shelf_course/config/app_config.dart";
+import "package:shelf_course/middlewares/check_authorization.dart";
+import "package:shelf_course/routes/protected/protected.dart";
 import "package:shelf_course/routes/public/public.dart";
 import "package:shelf_router/shelf_router.dart";
 
@@ -12,14 +14,28 @@ import "package:shelf_router/shelf_router.dart";
 final _publicRouter = Router()
   ..post("/register", register)
   ..get("/login", login);
+// Configuriamo il router per le rotte protette, ovvero quelle accessibili solamente
+// su autorizzazione con JWT.
+final _protectedRouter = Router()
+  ..get("/todos", getTodos)
+  ..post("/todos", createTodo)
+  ..patch("/todos/<title>", completeTodo)
+  ..delete("/todos/<title>", deleteTodo);
 
 // Creiamo una [Pipeline] con il router pubblico
 final _publicHandler = const Pipeline().addHandler(_publicRouter.call);
+// Ne creiamo una anche per le routes private, inserendo il middleware per l'autorizzazione.
+final _protectedHandler = const Pipeline().addMiddleware(checkAuthorization()).addHandler(_protectedRouter.call);
 
 // Montiamo la [Pipeline] pubblica all'indirizzo "/api/".
 // In questo modo, appena creato il router privato, potremmo montarlo a un indirizzo diverso.
 // Quindi possiamo avere più router su uno stesso server.
-final mainRouter = Router()..mount("/api/", _publicHandler);
+//
+// Creato il router privato, lo montiamo su "/api/protected/", in modo da essere separato
+// dal router pubblico.
+final mainRouter = Router()
+  ..mount("/api/", _publicHandler)
+  ..mount("/api/protected/", _protectedHandler);
 
 void main(List<String> args) async {
   // All'inizio del main, carichiamo le variabili d'ambiente che si trovano nel file

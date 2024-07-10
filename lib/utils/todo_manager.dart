@@ -19,4 +19,14 @@ class TodoManager {
 
   // Funzione per eliminare un todo.
   static void deleteTodo(Todo todo) => todos.remove(todo);
+
+  static Todo completeTodo(Todo oldTodo) {
+    // Accediamo all'indice di questo todo per sostituirlo con uno nuovo
+    // con `completed = true`.
+    final todoIndex = todos.indexOf(oldTodo);
+    final newTodo = oldTodo.copyWith(completed: true);
+    todos.insert(todoIndex, newTodo);
+
+    return newTodo;
+  }
 }

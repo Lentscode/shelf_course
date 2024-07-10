@@ -23,11 +23,9 @@ Future<Response> completeTodo(Request req) async {
     return Response.badRequest(body: "Unable to access to todo with title: $todoTitle");
   }
 
-  // Accediamo all'indice di questo todo per sostituirlo con uno nuovo
-  // con `completed = true`.
-  final todoIndex = todos.indexOf(todo);
-  final newTodo = todo.copyWith(completed: true);
-  todos.insert(todoIndex, newTodo);
+  // Creiamo un todo con `completed = true` e lo sostituiamo
+  // a quello vecchio
+  final newTodo = TodoManager.completeTodo(todo);
 
   // Ritorniamo il nuovo todo.
   return Response.ok(

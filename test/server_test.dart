@@ -22,7 +22,7 @@ void main() {
   tearDown(() => p.kill());
 
   group("Authentication", () {
-    test("Register success", () async {
+    test("Login success", () async {
       final registerRes = await post(
         Uri.parse("$host/api/register"),
         body: jsonEncode({"username": "lents", "password": "password"}),
@@ -40,12 +40,53 @@ void main() {
           "password": "password",
         }),
       );
-      final loginBody = jsonDecode(registerRes.body);
-      print(loginRes.statusCode);
-      print(loginBody);
+      final loginBody = jsonDecode(loginRes.body);
 
       expect(loginRes.statusCode, 200);
       expect(loginBody["token"], isA<String>());
+    });
+
+    test("Login error: wrong password", () async {
+      final registerRes = await post(
+        Uri.parse("$host/api/register"),
+        body: jsonEncode({"username": "lents", "password": "password"}),
+      );
+      final registerBody = jsonDecode(registerRes.body);
+
+      expect(registerRes.statusCode, 200);
+      expect(registerBody["username"], "lents");
+      expect(registerBody["id"], isA<String>());
+
+      final loginRes = await post(
+        Uri.parse("$host/api/login"),
+        body: jsonEncode({
+          "username": "lents",
+          "password": "123456",
+        }),
+      );
+
+      expect(loginRes.statusCode, 403);
+    });
+
+    test("Login error: missing fields", () async {
+      final registerRes = await post(
+        Uri.parse("$host/api/register"),
+        body: jsonEncode({"username": "lents", "password": "password"}),
+      );
+      final registerBody = jsonDecode(registerRes.body);
+
+      expect(registerRes.statusCode, 200);
+      expect(registerBody["username"], "lents");
+      expect(registerBody["id"], isA<String>());
+
+      final loginRes = await post(
+        Uri.parse("$host/api/login"),
+        body: jsonEncode({
+          "username": "lents",
+        }),
+      );
+
+      expect(loginRes.statusCode, 400);
     });
   });
 }

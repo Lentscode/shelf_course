@@ -6,8 +6,13 @@ Future<Response> login(Request req) async {
   final data = await RequestUtils.getPayload(req);
 
   // Accediamo a username e password tramite il payload della richiesta.
-  final String username = data["username"];
-  final String password = data["password"];
+  final String? username = data["username"];
+  final String? password = data["password"];
+
+  // Controlliamo se sia username che password vengano compresi nella richiesta.
+  if (username == null || password == null) {
+    return Response.badRequest(body: "Username or password missing");
+  }
 
   // Cerchiamo un utente con lo stesso username nella lista [users].
   // Se assente, user diventa null

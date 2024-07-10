@@ -13,7 +13,7 @@ import "package:shelf_router/shelf_router.dart";
 // agli utenti non autenticati, in quanto devono registrarsi.
 final _publicRouter = Router()
   ..post("/register", register)
-  ..get("/login", login);
+  ..post("/login", login);
 // Configuriamo il router per le rotte protette, ovvero quelle accessibili solamente
 // su autorizzazione con JWT.
 final _protectedRouter = Router()

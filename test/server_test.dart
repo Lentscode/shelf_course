@@ -21,14 +21,31 @@ void main() {
 
   tearDown(() => p.kill());
 
-  test("Root", () async {
-    final response = await post(
-      Uri.parse("$host/api/register"),
-      body: {"username": "lents", "password": "password"},
-    );
-    expect(response.statusCode, 200);
-    final body = jsonDecode(response.body);
-    expect(body["username"], "lents");
-    expect(body["password"], isA<String>());
+  group("Authentication", () {
+    test("Register success", () async {
+      final registerRes = await post(
+        Uri.parse("$host/api/register"),
+        body: jsonEncode({"username": "lents", "password": "password"}),
+      );
+      final registerBody = jsonDecode(registerRes.body);
+
+      expect(registerRes.statusCode, 200);
+      expect(registerBody["username"], "lents");
+      expect(registerBody["id"], isA<String>());
+
+      final loginRes = await post(
+        Uri.parse("$host/api/login"),
+        body: jsonEncode({
+          "username": "lents",
+          "password": "password",
+        }),
+      );
+      final loginBody = jsonDecode(registerRes.body);
+      print(loginRes.statusCode);
+      print(loginBody);
+
+      expect(loginRes.statusCode, 200);
+      expect(loginBody["token"], isA<String>());
+    });
   });
 }

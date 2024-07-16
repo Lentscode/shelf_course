@@ -22,6 +22,32 @@ void main() {
   tearDown(() => p.kill());
 
   group("Authentication", () {
+    test("Register success", () async {
+      final res = await post(
+        Uri.parse("$host/api/register"),
+        body: jsonEncode({"username": "lents", "password": "password"}),
+      );
+
+      final body = jsonDecode(res.body);
+
+      expect(res.statusCode, 200);
+      expect(body["username"], "lents");
+      expect(body["id"], isNotNull);
+    });
+
+    test("Register error: user existing", () async {
+      await post(
+        Uri.parse("$host/api/register"),
+        body: jsonEncode({"username": "lents", "password": "password"}),
+      );
+      final secondRes = await post(
+        Uri.parse("$host/api/register"),
+        body: jsonEncode({"username": "lents", "password": "password1"}),
+      );
+
+      expect(secondRes.statusCode, 403);
+      expect(secondRes.body, "Error creating user. Retry");
+    });
     test("Login success", () async {
       final registerRes = await post(
         Uri.parse("$host/api/register"),
